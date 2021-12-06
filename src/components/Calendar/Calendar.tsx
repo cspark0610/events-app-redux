@@ -8,6 +8,7 @@ import {
   UserEvent
 } from '../../redux/user-events';
 import { addZero } from '../Recorder/Recorder';
+import EventItem from './EventItem';
 
 const mapState = (state: RootState) => ({
   events: selectUserEventsArray(state)
@@ -36,8 +37,8 @@ const groupEventsByDay = (events: UserEvent[]) => {
     groups[dateKey].push(event);
   };
   events.forEach(event => {
-    const dateStartKey = createDateKey(new Date(event.dateStart)); //YYYY-MM-DD
-    const dateEndKey = createDateKey(new Date(event.dateEnd)); //YYYY-MM-DD
+    const dateStartKey = createDateKey(new Date(event.dateStart));
+    const dateEndKey = createDateKey(new Date(event.dateEnd));
     addToGroup(dateStartKey, event);
     if (dateStartKey !== dateEndKey) {
       addToGroup(dateEndKey, event);
@@ -59,7 +60,7 @@ const Calendar: React.FC<Props> = ({ events, loadUserEvents }) => {
     groupedEvents = groupEventsByDay(events);
     //unix timestamp
     sortedGroupKeys = Object.keys(groupedEvents).sort(
-      (date1, date2) => Number(new Date(date1)) - Number(new Date(date2))
+      (date1, date2) => Number(new Date(date2)) - Number(new Date(date1))
     );
   }
 
@@ -82,19 +83,9 @@ const Calendar: React.FC<Props> = ({ events, loadUserEvents }) => {
               </span>
             </div>
             <div className="calendar-events">
-              {events.map(event => {
-                return (
-                  <div className="calendar-event" key={event.id}>
-                    <div className="calendar-event-info">
-                      <div className="calendar-event-time">10:00-12:00</div>
-                      <div className="calendar-event-title">{event.title}</div>
-                    </div>
-                    <button className="calendar-event-delete-button">
-                      &times;
-                    </button>
-                  </div>
-                );
-              })}
+              {events.map(event => (
+                <EventItem event={event} key={event.id} />
+              ))}
             </div>
           </div>
         );
